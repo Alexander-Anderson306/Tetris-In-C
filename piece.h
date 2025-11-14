@@ -34,7 +34,8 @@ enum ButtonPress {
 typedef struct Piece_Component {
     int row;
     int col;
-    char is_rotation_piece;
+    int x;
+    int y;
 } Piece_Component;
 
 typedef struct Piece {
@@ -43,7 +44,7 @@ typedef struct Piece {
 } Piece;
 
 void init_piece(Piece* piece);
-void row_col_to_x_y(Piece_Component* component, int* x, int* y);
+void copy_piece(Piece* source, Piece* destination);
 void rotate_piece(Piece* piece, char direction);
 
 #endif

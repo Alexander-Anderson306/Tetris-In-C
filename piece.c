@@ -24,131 +24,211 @@ void init_piece(Piece* piece) {
             //first component
             piece->components[0].row = START_ROW;
             piece->components[0].col = START_COL - 1;
-            piece->components[0].is_rotation_piece = 0;
+            piece->components[0].x = -1;
+            piece->components[0].y = 0;
             //second component rotate around this one
             piece->components[1].row = START_ROW;
             piece->components[1].col = START_COL;
-            piece->components[1].is_rotation_piece = 1;
+            piece->components[1].x = 0;
+            piece->components[1].y = 0;
             //third component
             piece->components[2].row = START_ROW;
             piece->components[2].col = START_COL + 1;
-            piece->components[2].is_rotation_piece = 0;
+            piece->components[2].x = 1;
+            piece->components[2].y = 0;
             //fourth component
             piece->components[3].row = START_ROW;
             piece->components[3].col = START_COL + 2;
-            piece->components[3].is_rotation_piece = 0;
+            piece->components[3].x = 2;
+            piece->components[3].y = 0;
             break;
         case SQUARE:
             //first component rotate around this one
             piece->components[0].row = START_ROW;
             piece->components[0].col = START_COL;
-            piece->components[0].is_rotation_piece = 1;
+            piece->components[0].x = 0;
+            piece->components[0].y = 0;
             //second component
             piece->components[1].row = START_ROW;
             piece->components[1].col = START_COL + 1;
-            piece->components[1].is_rotation_piece = 0;
+            piece->components[1].x = 1;
+            piece->components[1].y = 0;
             //third component
             piece->components[2].row = START_ROW + 1;
             piece->components[2].col = START_COL;
-            piece->components[2].is_rotation_piece = 0;
+            piece->components[2].x = 0;
+            piece->components[2].y = -1;
             //fourth component
             piece->components[3].row = START_ROW + 1;
             piece->components[3].col = START_COL + 1;
-            piece->components[3].is_rotation_piece = 0;
+            piece->components[3].x = 1;
+            piece->components[3].y = -1;
             break;
         case L:
             //first component
             piece->components[0].row = START_ROW;
             piece->components[0].col = START_COL;
-            piece->components[0].is_rotation_piece = 0;
+            piece->components[0].x = 0;
+            piece->components[0].y = 0;
             //second component
             piece->components[1].row = START_ROW + 1;
             piece->components[1].col = START_COL;
-            piece->components[1].is_rotation_piece = 0;
+            piece->components[1].x = 0;
+            piece->components[1].y = -1;
             //third component rotate around this one
             piece->components[2].row = START_ROW + 2;
             piece->components[2].col = START_COL;
-            piece->components[2].is_rotation_piece = 1;
+            piece->components[2].x = 0;
+            piece->components[2].y = -2;
             //fourth component
             piece->components[3].row = START_ROW + 2;
             piece->components[3].col = START_COL + 1;
-            piece->components[3].is_rotation_piece = 0;
+            piece->components[3].x = 1;
+            piece->components[3].y = -2;
             break;
         case REVERS_L:
             //first component
             piece->components[0].row = START_ROW;
             piece->components[0].col = START_COL;
-            piece->components[0].is_rotation_piece = 0;
+            piece->components[0].x = 0;
+            piece->components[0].y = 0;
             //second component
             piece->components[1].row = START_ROW + 1;
             piece->components[1].col = START_COL;
-            piece->components[1].is_rotation_piece = 0;
+            piece->components[1].x = 0;
+            piece->components[1].y = -1;
             //third component rotate around this one
             piece->components[2].row = START_ROW + 2;
             piece->components[2].col = START_COL;
-            piece->components[2].is_rotation_piece = 1;
+            piece->components[2].x = 0;
+            piece->components[2].y = -2;
             //fourth component
             piece->components[3].row = START_ROW + 2;
             piece->components[3].col = START_COL - 1;
-            piece->components[3].is_rotation_piece = 0;
+            piece->components[3].x = -1;
+            piece->components[3].y = -2;
             break;
         case Z:
             //first component
             piece->components[0].row = START_ROW;
-            piece->components[0].col = START_COL-1;
-            piece->components[0].is_rotation_piece = 0;
+            piece->components[0].col = START_COL - 1;
+            piece->components[0].x = -1;
+            piece->components[0].y = 0;
             //second component
             piece->components[1].row = START_ROW;
             piece->components[2].col = START_COL;
-            piece->components[1].is_rotation_piece = 0;
+            piece->components[1].x = 0;
+            piece->components[1].y = 0;
             //third component rotate around this one
             piece->components[2].row = START_ROW + 1;
             piece->components[2].col = START_COL;
-            piece->components[2].is_rotation_piece = 1;
+            piece->components[2].x = 0;
+            piece->components[2].y = -1;
             //fourth component
             piece->components[3].row = START_ROW + 1;
             piece->components[3].col = START_COL + 1;
-            piece->components[3].is_rotation_piece = 0;
+            piece->components[3].x = 1;
+            piece->components[3].y = -1;
             break;
         case REVERS_Z:
             //first component
             piece->components[0].row = START_ROW + 1;
             piece->components[0].col = START_COL;
-            piece->components[0].is_rotation_piece = 0;
+            piece->components[0].x = 0;
+            piece->components[0].y = -1;
             //second component rotate around this one
             piece->components[1].row = START_ROW + 1;
             piece->components[1].col = START_COL + 1;
-            piece->components[1].is_rotation_piece = 1;
+            piece->components[1].x = 1;
+            piece->components[1].y = -1;
             //third component
             piece->components[2].row = START_ROW;
             piece->components[2].col = START_COL + 1;
-            piece->components[2].is_rotation_piece = 0;
+            piece->components[2].x = 1;
+            piece->components[2].y = 0;
             //fourth component
             piece->components[3].row = START_ROW;
             piece->components[3].col = START_COL + 2;
-            piece->components[3].is_rotation_piece = 0;
+            piece->components[3].x = 2;
+            piece->components[3].y = 0;
             break;
         case T:
             //first component
             piece->components[0].row = START_ROW;
             piece->components[0].col = START_COL - 1;
-            piece->components[0].is_rotation_piece = 0;
+            piece->components[0].x = -1;
+            piece->components[0].y = 0;
             //second component rotate around this one
             piece->components[1].row = START_ROW;
             piece->components[1].col = START_COL;
-            piece->components[1].is_rotation_piece = 1;
+            piece->components[1].x = 0;
+            piece->components[1].y = 0;
             //third component
             piece->components[2].row = START_ROW + 1;
             piece->components[2].col = START_COL;
-            piece->components[2].is_rotation_piece = 0;
+            piece->components[2].x = 0;
+            piece->components[2].y = -1;
             //fourth component
             piece->components[3].row = START_ROW;
             piece->components[3].col = START_COL + 1;
-            piece->components[3].is_rotation_piece = 0;
+            piece->components[3].x = 1;
+            piece->components[3].y = 0;
             break;
         default:
             fprintf(stderr, "Invalid piece type generated\n");
             exit(1);
             break;
+    }
+}
+
+/**
+ * Copies the components of a given piece from a source piece to a destination piece.
+ * 
+ * @param source The piece to copy from.
+ * @param destination The piece to copy to.
+ */
+void copy_piece(Piece* source, Piece* destination) {
+    for (int i = 0; i < 4; i++) {
+        destination->components[i].row = source->components[i].row;
+        destination->components[i].col = source->components[i].col;
+        destination->components[i].x = source->components[i].x;
+        destination->components[i].y = source->components[i].y;
+    }
+}
+
+/**
+ * Rotate a given piece by a given direction.
+ *
+ *
+ * @param piece The piece to be rotated.
+ * @param direction The direction to rotate the piece, either 'a' or 'd'.
+ */
+void rotate_piece(Piece* piece, char direction) {
+    //we multiply by the left rotation matrix
+    //RotMat 2X2 times 2X1 = 2X1
+    if (direction == LEFT) {
+        for (int i = 0; i < 4; i++) {
+            int old_x = piece->components[i].x;
+            int old_y = piece->components[i].y;
+
+            piece->components[i].x = old_x * left_rotation[0] + old_y * left_rotation[1];
+            piece->components[i].y = old_x * left_rotation[2] + old_y * left_rotation[3];
+
+            //apply the rotation to the board coordinates
+            piece->components[i].row += piece->components[i].y;
+            piece->components[i].col += piece->components[i].x;
+        }
+    } else if (direction == RIGHT) {
+        for (int i = 0; i < 4; i++) {
+            int old_x = piece->components[i].x;
+            int old_y = piece->components[i].y;
+
+            piece->components[i].x = old_x * right_rotation[0] + old_y * right_rotation[1];
+            piece->components[i].y = old_x * right_rotation[2] + old_y * right_rotation[3];
+
+            //apply the rotation to the board coordinates
+            piece->components[i].row += piece->components[i].y;
+            piece->components[i].col += piece->components[i].x;
+        }
     }
 }
