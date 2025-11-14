@@ -1,53 +1,78 @@
 #include "game.h"
+int gravity_tick_rates[] = {1000000, 800000, 600000, 400000, 200000, 100000};
+
+char game_over = 0;
+//this mutex will be used to lock access to the board
+static pthread_mutex_t board_mutex = PTHREAD_MUTEX_INITIALIZER;
 
 int main() {
     //seed random
     srand(time(NULL));
+    //set raw mode
+    set_raw_mode();
     Board board;
     init_board(&board);
     game_loop(&board);
+    reset_terminal();
     return 0;
 }
 
 void game_loop(Board* board) {
-    //handle user input later just testing for now
-    char flag = 1;
-    print_board(board);
-    while(flag) {
-        //check if the top row has a piece component
-        for(int i = 1; i < COLS-1; i++) {
-            if(board->character_board[1][i] != EMPTY_SPACE) {
-                flag = 0;
+    //
+}
+
+//this function will likely need its own thread
+void check_for_clears_and_score(Board* board) {
+    //check for clears and return the score of the clear
+    //also update the board
+
+    char rows[ROWS];
+    memset(rows, 0, ROWS);
+
+    while(!game_over) {
+        usleep(USER_TICK_RATE);
+        //find row indexs of rows we need to clear
+        for(int i = 0; i < ROWS; i++) {
+            char clear_flag = 1;
+            for(int j = 0; j < COLS; j++) {
+                if(board->character_board[i][j] == EMPTY_SPACE) {
+                    clear_flag = 0;
+                    break;
+                }
+            }
+
+            if(clear_flag) {
+                rows[i] = 1;
             }
         }
 
-        //generate a new piece
-        Piece piece;
-        init_piece(&piece);
-        //put the piece in the board
-        update_board(board, &piece, NULL);
-        //while the piece is moving
-        char not_moving = 0;
-        do {
-            //half a second
-            usleep(500000);
-            //copy the piece just in case the movement is invalid and copy board just in case the movement is invalid
-            Piece old_piece;
-            Board old_board;
-            copy_board(board, &old_board);
-            copy_piece(&piece, &old_piece);
-            //move the piece down
-            move_piece(&piece, 's');
-            //update the board
-            not_moving = update_board(board, &piece, &old_piece);
-            //check if the movement was valid
-            if(not_moving == 2) {
-                //movement invalid use the old board
-                *board = old_board;
-                piece = old_piece;
-            }
+        //now clear the rows
+        //keep track of the number of clears for the score
+    }
+}
 
-            print_board(board);
-        } while(!not_moving);
+/**
+ * Returns the index of the gravity tick rate array based on the current score.
+ *
+ * The fall tick rate determines how often the piece should fall down one row.
+ * The higher the score, the faster the piece should fall.
+ *
+ *
+ * @param score The current score.
+ * @return The updated fall tick rate.
+ */
+int update_fall_tick_rate(int score) {
+    if(score < 500) {
+        return 0;
+    } else if(score < 2500) {
+        return 1;
+    } else if(score < 4000) {
+        return 2;
+    } else if(score < 8000) {
+        return 3;
+    } else if(score < 10000) {
+        return 4;
+    } else {
+        return 5;
     }
 }
