@@ -102,16 +102,17 @@ RGB get_color(enum PieceType type) {
  */
 char update_board(Board* board, Piece* new_piece, Piece* old_piece) {
     //get rid of the old piece
-    for(int i = 0; i < 4; i++) {
-        board->character_board[old_piece->components[i].row][old_piece->components[i].col] = EMPTY_SPACE;
-        board->color_board[old_piece->components[i].row][old_piece->components[i].col].r = 0;
-        board->color_board[old_piece->components[i].row][old_piece->components[i].col].g = 0;
-        board->color_board[old_piece->components[i].row][old_piece->components[i].col].b = 0;
+    if(old_piece != NULL){
+        for(int i = 0; i < 4; i++) {
+            board->character_board[old_piece->components[i].row][old_piece->components[i].col] = EMPTY_SPACE;
+            board->color_board[old_piece->components[i].row][old_piece->components[i].col].r = 0;
+            board->color_board[old_piece->components[i].row][old_piece->components[i].col].g = 0;
+            board->color_board[old_piece->components[i].row][old_piece->components[i].col].b = 0;
+        }
     }
 
     //color of the piece
     RGB color = get_color(new_piece->type);
-    char stop_falling = 0;
     //add new peice
     //return 1 if piece is valid, but cannot move down any further
     //return 2 if the piece is invalid
@@ -121,14 +122,28 @@ char update_board(Board* board, Piece* new_piece, Piece* old_piece) {
             board->color_board[new_piece->components[i].row][new_piece->components[i].col].r = color.r;
             board->color_board[new_piece->components[i].row][new_piece->components[i].col].g = color.g;
             board->color_board[new_piece->components[i].row][new_piece->components[i].col].b = color.b;
-            //check if the piece can move down any further
-            if(board->character_board[new_piece->components[i].row + 1][new_piece->components[i].col] != EMPTY_SPACE) {
-                stop_falling = 1;
-            }
         } else {
             return 2;
         }
     }
 
-    return stop_falling;
+    //now check if the piece can move down again
+    for(int i = 0; i < 4; i++) {
+        if(board->character_board[new_piece->components[i].row + 1][new_piece->components[i].col] != EMPTY_SPACE) {
+            //check if this piece component is part of the current piece
+            char cant_fall = 1;
+            for(int j = 0; j < 4; j++) {
+                if(new_piece->components[i].col == new_piece->components[j].col && new_piece->components[i].row == new_piece->components[j].row) {
+                    //the piece component is just part of the current piece (no problem keep falling)
+                    cant_fall = 0;
+                }
+            }
+
+            if(cant_fall) {
+                return 1;
+            }
+        }
+    }
+
+    return 0;
 }

@@ -14,37 +14,40 @@ void game_loop(Board* board) {
     char flag = 1;
     print_board(board);
     while(flag) {
-        //generate a new piece
-        Piece piece;
-        init_piece(&piece);
-        //while the piece is moving
-        char not_moving = 0;
-        do {
-            //sleep first
-            sleep(1);
-            //get a copy of the current board and piece for update and movement validation
-            Board board_copy;
-            copy_board(board, &board_copy);
-            Piece piece_copy;
-            copy_piece(&piece, &piece_copy);
-            not_moving = update_board(&board_copy, &piece_copy, &piece);
-            //if the piece is valid then update the board
-            if(not_moving != 2) {
-                *board = board_copy;
-                piece = piece_copy;
-            }
-            //print the board
-            print_board(board);
-            //move the piece down
-            move_piece(&piece, 's');
-            //check if the piece is valid
-        } while(!not_moving);
-
-        //check if the top row has an object
+        //check if the top row has a piece component
         for(int i = 1; i < COLS-1; i++) {
             if(board->character_board[1][i] != EMPTY_SPACE) {
                 flag = 0;
             }
         }
+
+        //generate a new piece
+        Piece piece;
+        init_piece(&piece);
+        //put the piece in the board
+        update_board(board, &piece, NULL);
+        //while the piece is moving
+        char not_moving = 0;
+        do {
+            //half a second
+            usleep(500000);
+            //copy the piece just in case the movement is invalid and copy board just in case the movement is invalid
+            Piece old_piece;
+            Board old_board;
+            copy_board(board, &old_board);
+            copy_piece(&piece, &old_piece);
+            //move the piece down
+            move_piece(&piece, 's');
+            //update the board
+            not_moving = update_board(board, &piece, &old_piece);
+            //check if the movement was valid
+            if(not_moving == 2) {
+                //movement invalid use the old board
+                *board = old_board;
+                piece = old_piece;
+            }
+
+            print_board(board);
+        } while(!not_moving);
     }
 }
