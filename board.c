@@ -6,25 +6,29 @@
  * @param board The board to be initialized.
  */
 void init_board(Board* board) {
-    for(int i = 0; i < ROWS; i++) {
+    //initialize top and bottom row
+    for(int i = 0; i < COLS; i++) {
+        board->character_board[0][i] = TOP_BOTTEM_EDGE;
+        board->character_board[ROWS - 1][i] = TOP_BOTTEM_EDGE;
+        board->color_board[0][i].r = 0;
+        board->color_board[0][i].g = 0;
+        board->color_board[0][i].b = 0;
+        board->color_board[ROWS - 1][i].r = 0;
+        board->color_board[ROWS - 1][i].g = 0;
+        board->color_board[ROWS - 1][i].b = 0;
+    }
+
+    //initialize the rest of the board
+    for(int i = 1; i < ROWS-1; i++) {
         for(int j = 0; j < COLS; j++) {
-            if(i == 0 || i == ROWS - 1) {
-                board->character_board[i][j] = TOP_BOTTEM_EDGE;
-                board->color_board[i][j].r = 0;
-                board->color_board[i][j].g = 0;
-                board->color_board[i][j].b = 0;
-            } else if(j == 0 || j == COLS - 1) {
+            if(j == 0 || j == COLS - 1) {
                 board->character_board[i][j] = LEFT_RIGHT_EDGE;
-                board->color_board[i][j].r = 0;
-                board->color_board[i][j].g = 0;
-                board->color_board[i][j].b = 0;
             } else {
-                //may have to change this depending on how blank spaces get printed
                 board->character_board[i][j] = EMPTY_SPACE;
-                board->color_board[i][j].r = 0;
-                board->color_board[i][j].g = 0;
-                board->color_board[i][j].b = 0;
             }
+            board->color_board[i][j].r = 0;
+            board->color_board[i][j].g = 0;
+            board->color_board[i][j].b = 0;
         }
     }
 }
@@ -42,9 +46,11 @@ void print_board(Board* board) {
     for(int i = 0; i < ROWS; i++) {
         for(int j = 0; j < COLS; j++) {
             //we print the piece and its current color
-            printf("\x1b[38;2%d;%d;%dm%c", board->color_board[i][j].r, board->color_board[i][j].g, board->color_board[i][j].b, 
-                board->character_board[i][j]);
+            printf("\x1b[38;2%d;%d;%dm%c", board->color_board[i][j].r, board->color_board[i][j].g, board->color_board[i][j].b, board->character_board[i][j]);
+            //add a space after each character for better readability
+            printf(" ");
         }
+        printf("\n");
     }
 }
 
