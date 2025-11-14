@@ -46,5 +46,8 @@ typedef struct Piece {
 void init_piece(Piece* piece);
 void copy_piece(Piece* source, Piece* destination);
 void rotate_piece(Piece* piece, char direction);
+void move_down(Piece* piece);
+void move_left(Piece* piece);
+void move_right(Piece* piece);
 
 #endif

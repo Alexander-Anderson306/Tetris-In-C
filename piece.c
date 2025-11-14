@@ -232,3 +232,45 @@ void rotate_piece(Piece* piece, char direction) {
         }
     }
 }
+
+/**
+ * Move a given piece down by one row.
+ *
+ * This function moves a given piece down by one row by incrementing the
+ * row of each component in the piece.
+ *
+ * @param piece The piece to be moved down.
+ */
+void move_down(Piece* piece) {
+    for (int i = 0; i < 4; i++) {
+        piece->components[i].row++;
+    }
+}
+
+/**
+ * Move a given piece to the left by one column.
+ *
+ * This function moves a given piece to the left by one column by decrementing the
+ * column of each component in the piece.
+ *
+ * @param piece The piece to be moved to the left.
+ */
+void move_left(Piece* piece) {
+    for (int i = 0; i < 4; i++) {
+        piece->components[i].col--;
+    }
+}
+
+/**
+ * Move a given piece to the right by one column.
+ *
+ * This function moves a given piece to the right by one column by incrementing the
+ * column of each component in the piece.
+ *
+ * @param piece The piece to be moved to the right.
+ */
+void move_right(Piece* piece) {
+    for (int i = 0; i < 4; i++) {
+        piece->components[i].col++;
+    }
+}
