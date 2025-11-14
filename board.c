@@ -7,15 +7,16 @@
  */
 void init_board(Board* board) {
     //initialize top and bottom row
+    RGB color = get_color((enum PieceType) -1);
     for(int i = 0; i < COLS; i++) {
         board->character_board[0][i] = TOP_BOTTEM_EDGE;
         board->character_board[ROWS - 1][i] = TOP_BOTTEM_EDGE;
-        board->color_board[0][i].r = 0;
-        board->color_board[0][i].g = 0;
-        board->color_board[0][i].b = 0;
-        board->color_board[ROWS - 1][i].r = 0;
-        board->color_board[ROWS - 1][i].g = 0;
-        board->color_board[ROWS - 1][i].b = 0;
+        board->color_board[0][i].r = color.r;
+        board->color_board[0][i].g = color.g;
+        board->color_board[0][i].b = color.b;
+        board->color_board[ROWS - 1][i].r = color.r;
+        board->color_board[ROWS - 1][i].g = color.g;
+        board->color_board[ROWS - 1][i].b = color.b;
     }
 
     //initialize the rest of the board
@@ -26,9 +27,9 @@ void init_board(Board* board) {
             } else {
                 board->character_board[i][j] = EMPTY_SPACE;
             }
-            board->color_board[i][j].r = 0;
-            board->color_board[i][j].g = 0;
-            board->color_board[i][j].b = 0;
+            board->color_board[i][j].r = color.r;
+            board->color_board[i][j].g = color.g;
+            board->color_board[i][j].b = color.b;
         }
     }
 }
@@ -46,7 +47,11 @@ void print_board(Board* board) {
     for(int i = 0; i < ROWS; i++) {
         for(int j = 0; j < COLS; j++) {
             //we print the piece and its current color
-            printf("\x1b[38;2%d;%d;%dm%c", board->color_board[i][j].r, board->color_board[i][j].g, board->color_board[i][j].b, board->character_board[i][j]);
+            printf("\x1b[38;2;%d;%d;%dm%c",
+                board->color_board[i][j].r,
+                board->color_board[i][j].g,
+                board->color_board[i][j].b,
+                board->character_board[i][j]);
             //add a space after each character for better readability
             printf(" ");
         }
@@ -88,6 +93,8 @@ RGB get_color(enum PieceType type) {
             return (RGB){252, 19, 3};
         case T:
             return (RGB){128, 0, 255};
+        default:
+            return (RGB){193, 199, 201};
     }
 }
 
@@ -102,12 +109,13 @@ RGB get_color(enum PieceType type) {
  */
 char update_board(Board* board, Piece* new_piece, Piece* old_piece) {
     //get rid of the old piece
+    RGB grey = get_color((enum PieceType) -1);
     if(old_piece != NULL){
         for(int i = 0; i < 4; i++) {
             board->character_board[old_piece->components[i].row][old_piece->components[i].col] = EMPTY_SPACE;
-            board->color_board[old_piece->components[i].row][old_piece->components[i].col].r = 0;
-            board->color_board[old_piece->components[i].row][old_piece->components[i].col].g = 0;
-            board->color_board[old_piece->components[i].row][old_piece->components[i].col].b = 0;
+            board->color_board[old_piece->components[i].row][old_piece->components[i].col].r = grey.r;
+            board->color_board[old_piece->components[i].row][old_piece->components[i].col].g = grey.g;
+            board->color_board[old_piece->components[i].row][old_piece->components[i].col].b = grey.b;
         }
     }
 

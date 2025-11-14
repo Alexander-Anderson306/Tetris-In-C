@@ -114,12 +114,12 @@ void init_piece(Piece* piece) {
             piece->components[0].col = START_COL - 1;
             piece->components[0].x = -1;
             piece->components[0].y = 0;
-            //second component
+            //second component rotate around this one
             piece->components[1].row = START_ROW;
             piece->components[2].col = START_COL;
             piece->components[1].x = 0;
             piece->components[1].y = 0;
-            //third component rotate around this one
+            //third component
             piece->components[2].row = START_ROW + 1;
             piece->components[2].col = START_COL;
             piece->components[2].x = 0;
