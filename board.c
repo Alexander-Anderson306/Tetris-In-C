@@ -38,12 +38,91 @@ void init_board(Board* board) {
  *
  * @param board The board to be printed.
  */
-void print_board(Board board) {
+void print_board(Board* board) {
     for(int i = 0; i < ROWS; i++) {
         for(int j = 0; j < COLS; j++) {
             //we print the piece and its current color
-            printf("\x1b[38;2%d;%d;%dm%c", board.color_board[i][j].r, board.color_board[i][j].g, board.color_board[i][j].b, 
-                board.character_board[i][j]);
+            printf("\x1b[38;2%d;%d;%dm%c", board->color_board[i][j].r, board->color_board[i][j].g, board->color_board[i][j].b, 
+                board->character_board[i][j]);
         }
     }
+}
+
+/**
+ * Copies the character_board and color_board of a given source board to a given destination board.
+ * 
+ *
+ * @param source The board to copy from.
+ * @param destination The board to copy to.
+ */
+void copy_board(Board* source, Board* destination) {
+    for (int i = 0; i < ROWS; i++) {
+        for (int j = 0; j < COLS; j++) {
+            destination->character_board[i][j] = source->character_board[i][j];
+            destination->color_board[i][j].r = source->color_board[i][j].r;
+            destination->color_board[i][j].g = source->color_board[i][j].g;
+            destination->color_board[i][j].b = source->color_board[i][j].b;
+        }
+    }
+}
+
+RGB get_color(enum PieceType type) {
+    switch (type) {
+        case LINE:
+            return (RGB){3, 248, 252};
+        case SQUARE:
+            return (RGB){244, 252, 3};
+        case L:
+            return (RGB){252, 190, 3};
+        case REVERS_L:
+            return (RGB){232, 90, 237};
+        case Z:
+            return (RGB){86, 252, 3};
+        case REVERS_Z:
+            return (RGB){252, 19, 3};
+        case T:
+            return (RGB){128, 0, 255};
+    }
+}
+
+/**
+ * Updates a given board by removing an old piece and adding a new piece.
+ *
+ *
+ * @param board The board to be updated.
+ * @param new_piece The new piece to be added to the board.
+ * @param old_piece The old piece to be removed from the board.
+ * @return 1 if the piece is valid but cannot move down any further, 2 if the piece is invalid.
+ */
+char update_board(Board* board, Piece* new_piece, Piece* old_piece) {
+    //get rid of the old piece
+    for(int i = 0; i < 4; i++) {
+        board->character_board[old_piece->components[i].row][old_piece->components[i].col] = EMPTY_SPACE;
+        board->color_board[old_piece->components[i].row][old_piece->components[i].col].r = 0;
+        board->color_board[old_piece->components[i].row][old_piece->components[i].col].g = 0;
+        board->color_board[old_piece->components[i].row][old_piece->components[i].col].b = 0;
+    }
+
+    //color of the piece
+    RGB color = get_color(new_piece->type);
+    char stop_falling = 0;
+    //add new peice
+    //return 1 if piece is valid, but cannot move down any further
+    //return 2 if the piece is invalid
+    for(int i = 0; i < 4; i++) {
+        if(board->character_board[new_piece->components[i].row][new_piece->components[i].col] == EMPTY_SPACE) {
+            board->character_board[new_piece->components[i].row][new_piece->components[i].col] = PIECE_COMPONENT;
+            board->color_board[new_piece->components[i].row][new_piece->components[i].col].r = color.r;
+            board->color_board[new_piece->components[i].row][new_piece->components[i].col].g = color.g;
+            board->color_board[new_piece->components[i].row][new_piece->components[i].col].b = color.b;
+            //check if the piece can move down any further
+            if(new_piece->components[i].row + 1 != EMPTY_SPACE) {
+                stop_falling = 1;
+            }
+        } else {
+            return 2;
+        }
+    }
+
+    return stop_falling;
 }
