@@ -1,6 +1,8 @@
 #include "game.h"
 
 int main() {
+    //seed random
+    srand(time(NULL));
     Board board;
     init_board(&board);
     game_loop(&board);
@@ -25,9 +27,6 @@ void game_loop(Board* board) {
             copy_board(board, &board_copy);
             Piece piece_copy;
             copy_piece(&piece, &piece_copy);
-            //move the piece down 
-            move_down(&piece_copy);
-            //check if the piece is valid
             not_moving = update_board(&board_copy, &piece_copy, &piece);
             //if the piece is valid then update the board
             if(not_moving != 2) {
@@ -36,10 +35,13 @@ void game_loop(Board* board) {
             }
             //print the board
             print_board(board);
+            //move the piece down
+            move_piece(&piece, 's');
+            //check if the piece is valid
         } while(!not_moving);
 
         //check if the top row has an object
-        for(int i = 0; i < COLS; i++) {
+        for(int i = 1; i < COLS-1; i++) {
             if(board->character_board[1][i] != EMPTY_SPACE) {
                 flag = 0;
             }

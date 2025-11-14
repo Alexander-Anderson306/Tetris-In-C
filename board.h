@@ -12,9 +12,9 @@
 #define EMPTY_SPACE ' '
 
 typedef struct RGB {
-    char r;
-    char g;
-    char b;
+    unsigned char r;
+    unsigned char g;
+    unsigned char b;
 } RGB;
 
 typedef struct Board {

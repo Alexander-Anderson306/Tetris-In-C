@@ -122,7 +122,7 @@ char update_board(Board* board, Piece* new_piece, Piece* old_piece) {
             board->color_board[new_piece->components[i].row][new_piece->components[i].col].g = color.g;
             board->color_board[new_piece->components[i].row][new_piece->components[i].col].b = color.b;
             //check if the piece can move down any further
-            if(new_piece->components[i].row + 1 != EMPTY_SPACE) {
+            if(board->character_board[new_piece->components[i].row + 1][new_piece->components[i].col] != EMPTY_SPACE) {
                 stop_falling = 1;
             }
         } else {

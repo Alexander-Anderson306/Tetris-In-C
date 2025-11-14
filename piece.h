@@ -3,13 +3,14 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 
 #define PIECE_COMPONENT '#'
 //when a line gets filled in, the line will flash with DELETING_COMPONENT once then it gets deleted
 #define DELETING_COMPONENT '@'
 
 #define START_ROW 1
-#define START_COL 10
+#define START_COL 5
 
 enum PieceType {
     LINE,
@@ -46,8 +47,6 @@ typedef struct Piece {
 void init_piece(Piece* piece);
 void copy_piece(Piece* source, Piece* destination);
 void rotate_piece(Piece* piece, char direction);
-void move_down(Piece* piece);
-void move_left(Piece* piece);
-void move_right(Piece* piece);
+void move_piece(Piece* piece, char direction);
 
 #endif

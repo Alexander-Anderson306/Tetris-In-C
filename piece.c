@@ -194,6 +194,7 @@ void copy_piece(Piece* source, Piece* destination) {
         destination->components[i].x = source->components[i].x;
         destination->components[i].y = source->components[i].y;
     }
+    destination->type = source->type;
 }
 
 /**
@@ -206,7 +207,7 @@ void copy_piece(Piece* source, Piece* destination) {
 void rotate_piece(Piece* piece, char direction) {
     //we multiply by the left rotation matrix
     //RotMat 2X2 times 2X1 = 2X1
-    if (direction == LEFT) {
+    if (direction == ROTATE_LEFT) {
         for (int i = 0; i < 4; i++) {
             int old_x = piece->components[i].x;
             int old_y = piece->components[i].y;
@@ -218,7 +219,7 @@ void rotate_piece(Piece* piece, char direction) {
             piece->components[i].row += piece->components[i].y;
             piece->components[i].col += piece->components[i].x;
         }
-    } else if (direction == RIGHT) {
+    } else if (direction == ROTATE_RIGHT) {
         for (int i = 0; i < 4; i++) {
             int old_x = piece->components[i].x;
             int old_y = piece->components[i].y;
@@ -234,43 +235,26 @@ void rotate_piece(Piece* piece, char direction) {
 }
 
 /**
- * Move a given piece down by one row.
+ * Move a given piece in a given direction.
  *
- * This function moves a given piece down by one row by incrementing the
- * row of each component in the piece.
- *
- * @param piece The piece to be moved down.
+ * @param piece The piece to be moved.
+ * @param direction The direction to move the piece, either 'a' for left, 'd' for right, or 's' for down.
  */
-void move_down(Piece* piece) {
-    for (int i = 0; i < 4; i++) {
-        piece->components[i].row++;
-    }
-}
-
-/**
- * Move a given piece to the left by one column.
- *
- * This function moves a given piece to the left by one column by decrementing the
- * column of each component in the piece.
- *
- * @param piece The piece to be moved to the left.
- */
-void move_left(Piece* piece) {
-    for (int i = 0; i < 4; i++) {
-        piece->components[i].col--;
-    }
-}
-
-/**
- * Move a given piece to the right by one column.
- *
- * This function moves a given piece to the right by one column by incrementing the
- * column of each component in the piece.
- *
- * @param piece The piece to be moved to the right.
- */
-void move_right(Piece* piece) {
-    for (int i = 0; i < 4; i++) {
-        piece->components[i].col++;
+void move_piece(Piece* piece, char direction) {
+    if(direction == LEFT) {
+        for(int i = 0; i < 4; i++) {
+            piece->components[i].col--;
+        }
+    } else if (direction == RIGHT) {
+        for(int i = 0; i < 4; i++) {
+            piece->components[i].col++;
+        }
+    } else if (direction == 's') {
+        for(int i = 0; i < 4; i++) {
+            piece->components[i].row++;
+        }
+    } else {
+        fprintf(stderr, "Invalid direction\n");
+        exit(1);
     }
 }
