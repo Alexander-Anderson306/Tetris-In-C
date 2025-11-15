@@ -93,10 +93,10 @@ int check_for_clears_and_score(Board* board, int tick_rate) {
     while(num_flashes < 3){
         //flash the pieces that are getting deleted
         print_board(board);
-        usleep(tick_rate/3);
+        usleep(tick_rate/4);
         print_board(&flashed_board);
         ++num_flashes;
-        usleep(tick_rate/3);
+        usleep(tick_rate/4);
     }
 
     //remove the cleared rows and update the board
@@ -110,6 +110,10 @@ int check_for_clears_and_score(Board* board, int tick_rate) {
             }
         }
     }
+
+    //print the cleared board to show the deletion
+    print_board(board);
+    usleep(tick_rate/4);
 
     //update the board (move all the pieces that can move down down)
     //this logic broke the pieces will end up floating gotta fix it
@@ -134,6 +138,8 @@ int check_for_clears_and_score(Board* board, int tick_rate) {
         }
     }
 
+    //print the new board
+    print_board(board);
     //all done return the score
     return score;
 }

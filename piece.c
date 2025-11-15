@@ -15,7 +15,7 @@ int right_rotation[] = {0, 1, -1, 0};
  */
 void init_piece(Piece* piece) {
     //generate random piece type
-    enum PieceType type = (enum PieceType) rand() % 7;
+    enum Piece_Type type = (enum Piece_Type) rand() % 7;
     piece->type = type;
 
     //may need to fix stuff later here

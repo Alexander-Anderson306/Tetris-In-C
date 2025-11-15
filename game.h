@@ -10,10 +10,9 @@
 
 #define USER_TICK_RATE 166667
 
-//its looking like we will need three threads
+//its looking like we will need two threads
 //one for gravity
 //one for user input
-//one for checking for clears and scoreing
 
 //for my tetris one line clear is 100 points
 //two line clear is 250 points
