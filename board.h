@@ -25,7 +25,8 @@ typedef struct Board {
 void init_board(Board* board);
 void print_board(Board* board);
 void copy_board(Board* source, Board* destination);
-RGB get_color(enum PieceType type);
+RGB get_color(enum Piece_Type type);
+void copy_rgb(RGB* source, RGB* destination);
 char update_board(Board* board, Piece* new_piece, Piece* old_piece);
 
 #endif

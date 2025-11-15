@@ -7,12 +7,12 @@
 
 #define PIECE_COMPONENT '#'
 //when a line gets filled in, the line will flash with DELETING_COMPONENT once then it gets deleted
-#define DELETING_COMPONENT '@'
+#define FLASHING_COMPONENT '@'
 
 #define START_ROW 1
 #define START_COL 5
 
-enum PieceType {
+enum Piece_Type {
     LINE,
     SQUARE,
     L,
@@ -22,7 +22,7 @@ enum PieceType {
     T
 };
 
-enum ButtonPress {
+enum Button_Press {
     SPEEDUP = 's',
     LEFT = 'a',
     RIGHT = 'd',
@@ -41,7 +41,7 @@ typedef struct Piece_Component {
 
 typedef struct Piece {
     Piece_Component components[4];
-    enum PieceType type;
+    enum Piece_Type type;
 } Piece;
 
 void init_piece(Piece* piece);

@@ -7,7 +7,7 @@
  */
 void init_board(Board* board) {
     //initialize top and bottom row
-    RGB color = get_color((enum PieceType) -1);
+    RGB color = get_color((enum Piece_Type) -1);
     for(int i = 0; i < COLS; i++) {
         board->character_board[0][i] = TOP_BOTTEM_EDGE;
         board->character_board[ROWS - 1][i] = TOP_BOTTEM_EDGE;
@@ -77,7 +77,15 @@ void copy_board(Board* source, Board* destination) {
     }
 }
 
-RGB get_color(enum PieceType type) {
+/**
+ * Returns an RGB struct containing the color corresponding to the given
+ * PieceType. If the PieceType
+ *
+ *
+ * @param type The PieceType to get the color for.
+ * @return An RGB struct containing the color corresponding to the given PieceType.
+ */
+RGB get_color(enum Piece_Type type) {
     switch (type) {
         case LINE:
             return (RGB){3, 248, 252};
@@ -99,6 +107,18 @@ RGB get_color(enum PieceType type) {
 }
 
 /**
+ * Copies the RGB values from a given source to a given destination.
+ *
+ * @param source The RGB values to copy from.
+ * @param destination The RGB values to copy to.
+ */
+void copy_rgb(RGB* source, RGB* destination) {
+    destination->r = source->r;
+    destination->g = source->g;
+    destination->b = source->b;
+}
+
+/**
  * Updates a given board by removing an old piece and adding a new piece.
  *
  *
@@ -109,7 +129,7 @@ RGB get_color(enum PieceType type) {
  */
 char update_board(Board* board, Piece* new_piece, Piece* old_piece) {
     //get rid of the old piece
-    RGB grey = get_color((enum PieceType) -1);
+    RGB grey = get_color((enum Piece_Type) -1);
     if(old_piece != NULL){
         for(int i = 0; i < 4; i++) {
             board->character_board[old_piece->components[i].row][old_piece->components[i].col] = EMPTY_SPACE;
