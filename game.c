@@ -115,14 +115,17 @@ int check_for_clears_and_score(Board* board, int tick_rate) {
     //this logic broke the pieces will end up floating gotta fix it
     for(int i = ROWS-1; i > 1; i--) {
         for(int j = 1; j < COLS-1; j++) {
-            //move the piece down one if it can
-            if(board->character_board[i][j] != EMPTY_SPACE && board->character_board[i-1][j] == EMPTY_SPACE) {
+            //move the piece down until it hits something
+            int new_row = i;
+            while(new_row > 1 && board->character_board[new_row-1][j] == EMPTY_SPACE) --new_row;
+            //move the piece if we have to
+            if(new_row != i) {
                 RGB color;
                 copy_rgb(&board->color_board[i][j], &color);
-                board->character_board[i-1][j] = board->character_board[i][j];
-                board->color_board[i-1][j].r = color.r;
-                board->color_board[i-1][j].g = color.g;
-                board->color_board[i-1][j].b = color.b;
+                board->character_board[new_row][j] = PIECE_COMPONENT;
+                board->color_board[new_row][j].r = color.r;
+                board->color_board[new_row][j].g = color.g;
+                board->color_board[new_row][j].b = color.b;
                 board->character_board[i][j] = EMPTY_SPACE;
                 board->color_board[i][j].r = grey.r;
                 board->color_board[i][j].g = grey.g;
