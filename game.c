@@ -21,6 +21,17 @@ void game_loop(Board* board) {
     //
 }
 
+void* input_thread(void* arg) {
+    //the argument is the board
+    Board* board = (Board*) arg;
+
+    while(!game_over) {
+        usleep(USER_TICK_RATE);
+
+        //TODO : implement user input
+    }
+}
+
 int check_for_clears_and_score(Board* board, int tick_rate) {
     //NOTE: we do rows and cols 1 to length-1 because we dont need to worry about the rim of the board
 
@@ -100,7 +111,7 @@ int check_for_clears_and_score(Board* board, int tick_rate) {
     }
 
     //remove the cleared rows and update the board
-    for(int i = 0; i < ROWS; i++) {
+    for(int i = 1; i < ROWS-1; i++) {
         if(rows[i]) {
             for(int j = 1; j < COLS-1; j++) {
                 board->character_board[i][j] = EMPTY_SPACE;

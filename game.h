@@ -19,7 +19,7 @@
 //three line clear is 500 points
 //four line clear is 1000 points
 void game_loop(Board* board);
-int check_for_clears(Board* board);
+int check_for_clears_and_score(Board* board, int tick_rate);
 int update_fall_tick_rate(int score);
 
 #endif
