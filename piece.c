@@ -280,3 +280,19 @@ void move_piece(Piece* piece, Board* board, char direction) {
             break;
     }
 }
+
+
+
+/**
+ * Move a given piece down one row.
+ * This is used to simulate gravity in the game.
+ *
+ * @param piece The piece to be moved down.
+ */
+void gravity_tick(Piece* piece) {
+    //move the piece down
+    piece->components[0].row++;
+    piece->components[1].row++;
+    piece->components[2].row++;
+    piece->components[3].row++;
+}

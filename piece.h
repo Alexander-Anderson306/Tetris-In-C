@@ -48,5 +48,6 @@ void init_piece(Piece* piece);
 void copy_piece(Piece* source, Piece* destination);
 void rotate_piece(Piece* piece, char direction);
 void move_piece(Piece* piece, Board* board, char direction);
+char gravity_tick(Piece* piece);
 
 #endif

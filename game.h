@@ -18,13 +18,14 @@
 typedef struct Thread_Args {
     Board* board;
     Piece* piece;
+    int* score;
 } Thread_Args;
 
 //for my tetris one line clear is 100 points
 //two line clear is 250 points
 //three line clear is 500 points
 //four line clear is 1000 points
-void game_loop(Board* board);
+void game_loop(Board* board, Piece* piece, int* score);
 int check_for_clears_and_score(Board* board, int tick_rate);
 int update_fall_tick_rate(int score);
 

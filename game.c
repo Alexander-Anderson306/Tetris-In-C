@@ -2,9 +2,9 @@
 int gravity_tick_rates[] = {1000000, 800000, 600000, 400000, 200000, 100000};
 
 _Atomic char game_over = 0;
-_Atomic char need_new_piece = 0;
 //this mutex will be used to lock access to the board
 static pthread_mutex_t board_mutex = PTHREAD_MUTEX_INITIALIZER;
+static pthread_mutex_t print_mutex = PTHREAD_MUTEX_INITIALIZER;
 
 int main() {
     //seed random
@@ -13,13 +13,60 @@ int main() {
     set_raw_mode();
     Board board;
     init_board(&board);
-    game_loop(&board);
+    Piece piece;
+    init_piece(&piece);
+    //put the piece on the board and start the game loop
+    update_board(&board, &piece, NULL);
+    print_board(&board);
+    printf("Score: %d\n", 0);
+    int score = 0;
+    game_loop(&board, &piece, &score);
     reset_terminal();
+    //print the final score
+    printf("Final Score: %d\n", score);
     return 0;
 }
 
-void game_loop(Board* board) {
-    //
+void game_loop(Board* board, Piece* piece, int* score) {
+    int gravity_index = 0;
+    char result = 0;
+    Board copy;
+    while(!game_over) {
+        usleep(gravity_tick_rates[gravity_index]);
+
+        pthread_mutex_lock(&board_mutex);
+
+        //save a copy of the last piece for proper update
+        Piece temp;
+        copy_piece(piece, &temp);
+
+        //move the piece down
+        gravity_tick(piece);
+
+        //update the board
+        result = update_board(board, piece, &temp);
+
+        //if the result is one we need a new piece
+        if(result == 1) {
+            init_piece(piece);
+        } else if(result == 2) {
+            game_over = 1;
+        }
+
+        //check for clears
+        score = check_for_clears_and_score(board, gravity_tick_rates[gravity_index]);
+
+        //take a copy of the board for printing
+        copy_board(board, &copy);
+        //unlock access to the board
+        pthread_mutex_unlock(&board_mutex);
+
+        pthread_mutex_lock(&print_mutex);
+        print_board(&copy);
+        printf("Score: %d\n", score);
+        pthread_mutex_unlock(&print_mutex);
+        gravity_index = update_fall_tick_rate(score);
+    }
 }
 
 
@@ -38,49 +85,54 @@ void* input_thread(void* args) {
     Thread_Args* thread_args = (Thread_Args*) args;
     Board* board = thread_args->board;
     Piece* piece = thread_args->piece;
+    int* score = thread_args->score;
     char input;
 
     while(!game_over) {
         usleep(USER_TICK_RATE);
 
-        if(read(STDIN_FILENO, &input, 1) > 0) {
-            //lock access to the board
+        if (read(STDIN_FILENO, &input, 1) > 0) {
+
             pthread_mutex_lock(&board_mutex);
-            //we work with temp variables incase the input is invalid
-            //there is a better way to do this by checking the board in the rotate_piece functions, but ive gone too deep. Maybe Ill change it later
+
+            //save temp copies to validate input before committing
             Piece temp_piece;
             copy_piece(piece, &temp_piece);
+
             Board temp_board;
             copy_board(board, &temp_board);
 
-            if(input == QUIT) {
+            if (input == QUIT) {
                 game_over = 1;
+                pthread_mutex_unlock(&board_mutex);
                 return NULL;
-            } else if(input == ROTATE_LEFT || input == ROTATE_RIGHT) {
-                //update the board
+            }
+
+            //apply movement/rotation to temp_piece first
+            if (input == ROTATE_LEFT || input == ROTATE_RIGHT) {
                 rotate_piece(&temp_piece, input);
-            } else if(input == LEFT || input == RIGHT || input == DROP) {
-                //update the board
+            } 
+            else if (input == LEFT || input == RIGHT || input == DROP) {
                 move_piece(&temp_piece, board, input);
             }
 
-            //update the board and check result
-            char result = update_board(board, piece, &temp_piece);
+            //test the update on temp state
+            char result = update_board(&temp_board, &temp_piece, piece);
 
-            if(result == 1) {
-                //update was valid but we need a new piece
-                copy_piece(&temp_piece, piece);
-                copy_board(&temp_board, board);
-                need_new_piece = 1;
-            } else if(result == 0) {
-                //update was valid
+            if (result == 0 || result == 1) {
+                //valid update commit piece and board
                 copy_piece(&temp_piece, piece);
                 copy_board(&temp_board, board);
             }
-            //result = 2 means update was invalid (do nothing)
-
-            //unlock access to the board
+            //else: invalid (result == 2) do nothing (old piece and board remain)
+            Board copy;
+            copy_board(board, &copy);
             pthread_mutex_unlock(&board_mutex);
+
+            pthread_mutex_lock(&print_mutex);
+            print_board(&copy);
+            printf("Score: %d\n", *score);
+            pthread_mutex_unlock(&print_mutex);
         }
     }
 
@@ -220,15 +272,15 @@ int check_for_clears_and_score(Board* board, int tick_rate) {
  * @return The updated fall tick rate.
  */
 int update_fall_tick_rate(int score) {
-    if(score < 500) {
+    if(score < 1000) {
         return 0;
     } else if(score < 2500) {
         return 1;
-    } else if(score < 4000) {
+    } else if(score < 6000) {
         return 2;
-    } else if(score < 8000) {
-        return 3;
     } else if(score < 10000) {
+        return 3;
+    } else if(score < 20000) {
         return 4;
     } else {
         return 5;
