@@ -11,17 +11,37 @@ int main() {
     srand(time(NULL));
     //set raw mode
     set_raw_mode();
+
     Board board;
     init_board(&board);
     Piece piece;
     init_piece(&piece);
+
+    int score = 0;
     //put the piece on the board and start the game loop
     update_board(&board, &piece, NULL);
+
+    //initial frame
     print_board(&board);
     printf("Score: %d\n", 0);
-    int score = 0;
+
+    //user input thread
+    pthread_t input_tid;
+    Thread_Args args = (Thread_Args) {&board, &piece, &score};
+    pthread_create(&input_tid, NULL, input_thread, &args);
+
     game_loop(&board, &piece, &score);
+
+    //past here the game is over 
+
+    //rejoin the input thread and kill mutexs
+    pthread_join(input_tid, NULL);
+    pthread_mutex_destroy(&board_mutex);
+    pthread_mutex_destroy(&print_mutex);
+
+
     reset_terminal();
+    
     //print the final score
     printf("Final Score: %d\n", score);
     return 0;
