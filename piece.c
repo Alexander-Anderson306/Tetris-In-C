@@ -1,4 +1,5 @@
 #include "piece.h"
+#include "board.h"
 
 //keep left rotation and right rotation constantly loaded in memory and just use references to them
 //Flatened 2X2 matrix: 0 = 00, 1 = 01, 2 = 10, 3 = 11
@@ -238,23 +239,44 @@ void rotate_piece(Piece* piece, char direction) {
  * Move a given piece in a given direction.
  *
  * @param piece The piece to be moved.
- * @param direction The direction to move the piece, either 'a' for left, 'd' for right, or 's' for down.
+ * @param direction The direction to move the piece, either 'a' for left or 'd' for right.
  */
-void move_piece(Piece* piece, char direction) {
-    if(direction == LEFT) {
-        for(int i = 0; i < 4; i++) {
-            piece->components[i].col--;
-        }
-    } else if (direction == RIGHT) {
-        for(int i = 0; i < 4; i++) {
-            piece->components[i].col++;
-        }
-    } else if (direction == 's') {
-        for(int i = 0; i < 4; i++) {
-            piece->components[i].row++;
-        }
-    } else {
-        fprintf(stderr, "Invalid direction\n");
-        exit(1);
+void move_piece(Piece* piece, Board* board, char direction) {
+    switch(direction) {
+        case LEFT:
+            piece->components[0].col--;
+            piece->components[1].col--;
+            piece->components[2].col--;
+            piece->components[3].col--;
+            break;
+        case RIGHT:
+            piece->components[0].col++;
+            piece->components[1].col++;
+            piece->components[2].col++;
+            piece->components[3].col++;
+            break;
+        case DROP:
+            char stop_flag = 0;
+            while(!stop_flag) {
+                //check if there is something below each piece
+                for(int i = 0; i < 4; i++) {
+                    if(board->character_board[piece->components[i].row+1][piece->components[i].col] != EMPTY_SPACE) {
+                        stop_flag = 1;
+                        break;
+                    }
+                }
+
+                //move the piece down
+                if(!stop_flag) {
+                    piece->components[0].row++;
+                    piece->components[1].row++;
+                    piece->components[2].row++;
+                    piece->components[3].row++;
+                }
+            }
+        default:
+            fprintf(stderr, "Invalid direction generated\n");
+            exit(1);
+            break;
     }
 }

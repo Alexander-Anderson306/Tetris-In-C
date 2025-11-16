@@ -2,6 +2,7 @@
 #define GAME_H
 
 #include <pthread.h>
+#include <stdatomic.h>
 #include <unistd.h>
 #include <string.h>
 #include "board.h"
@@ -13,6 +14,11 @@
 //its looking like we will need two threads
 //one for gravity
 //one for user input
+
+typedef struct Thread_Args {
+    Board* board;
+    Piece* piece;
+} Thread_Args;
 
 //for my tetris one line clear is 100 points
 //two line clear is 250 points

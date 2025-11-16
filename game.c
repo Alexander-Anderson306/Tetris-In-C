@@ -1,7 +1,8 @@
 #include "game.h"
 int gravity_tick_rates[] = {1000000, 800000, 600000, 400000, 200000, 100000};
 
-char game_over = 0;
+_Atomic char game_over = 0;
+_Atomic char need_new_piece = 0;
 //this mutex will be used to lock access to the board
 static pthread_mutex_t board_mutex = PTHREAD_MUTEX_INITIALIZER;
 
@@ -21,15 +22,69 @@ void game_loop(Board* board) {
     //
 }
 
-void* input_thread(void* arg) {
-    //the argument is the board
-    Board* board = (Board*) arg;
+
+/**
+ * This function is a thread that is responsible for handling user input.
+ * It takes two arguments, a pointer to a Board and a pointer to a Piece.
+ * It will continuously read user input and update the board accordingly.
+ * If the user presses 'q', the game_over variable will be set to 1 and the thread will exit.
+ * If the user presses a valid movement key (left, right, down), the thread will update the board accordingly.
+ * If the user presses a valid rotation key (left or right), the thread will update the piece accordingly.
+ * If the update is invalid, the thread will do nothing.
+ * If the update is valid, but the piece needs a new piece, the thread will set the need_new_piece variable to 1.
+ */
+void* input_thread(void* args) {
+    //the argument is the board and the current piece we are working with
+    Thread_Args* thread_args = (Thread_Args*) args;
+    Board* board = thread_args->board;
+    Piece* piece = thread_args->piece;
+    char input;
 
     while(!game_over) {
         usleep(USER_TICK_RATE);
 
-        //TODO : implement user input
+        if(read(STDIN_FILENO, &input, 1) > 0) {
+            //lock access to the board
+            pthread_mutex_lock(&board_mutex);
+            //we work with temp variables incase the input is invalid
+            //there is a better way to do this by checking the board in the rotate_piece functions, but ive gone too deep. Maybe Ill change it later
+            Piece temp_piece;
+            copy_piece(piece, &temp_piece);
+            Board temp_board;
+            copy_board(board, &temp_board);
+
+            if(input == QUIT) {
+                game_over = 1;
+                return NULL;
+            } else if(input == ROTATE_LEFT || input == ROTATE_RIGHT) {
+                //update the board
+                rotate_piece(&temp_piece, input);
+            } else if(input == LEFT || input == RIGHT || input == DROP) {
+                //update the board
+                move_piece(&temp_piece, board, input);
+            }
+
+            //update the board and check result
+            char result = update_board(board, piece, &temp_piece);
+
+            if(result == 1) {
+                //update was valid but we need a new piece
+                copy_piece(&temp_piece, piece);
+                copy_board(&temp_board, board);
+                need_new_piece = 1;
+            } else if(result == 0) {
+                //update was valid
+                copy_piece(&temp_piece, piece);
+                copy_board(&temp_board, board);
+            }
+            //result = 2 means update was invalid (do nothing)
+
+            //unlock access to the board
+            pthread_mutex_unlock(&board_mutex);
+        }
     }
+
+    return NULL;
 }
 
 int check_for_clears_and_score(Board* board, int tick_rate) {
@@ -127,7 +182,6 @@ int check_for_clears_and_score(Board* board, int tick_rate) {
     usleep(tick_rate/4);
 
     //update the board (move all the pieces that can move down down)
-    //this logic broke the pieces will end up floating gotta fix it
     for(int i = ROWS-1; i > 1; i--) {
         for(int j = 1; j < COLS-1; j++) {
             //move the piece down until it hits something

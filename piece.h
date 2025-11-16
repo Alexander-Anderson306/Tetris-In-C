@@ -23,7 +23,7 @@ enum Piece_Type {
 };
 
 enum Button_Press {
-    SPEEDUP = 's',
+    DROP = 's',
     LEFT = 'a',
     RIGHT = 'd',
     ROTATE_LEFT = 'q',
@@ -47,6 +47,6 @@ typedef struct Piece {
 void init_piece(Piece* piece);
 void copy_piece(Piece* source, Piece* destination);
 void rotate_piece(Piece* piece, char direction);
-void move_piece(Piece* piece, char direction);
+void move_piece(Piece* piece, Board* board, char direction);
 
 #endif
