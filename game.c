@@ -41,7 +41,7 @@ int main() {
 
 
     reset_terminal();
-    
+
     //print the final score
     printf("Final Score: %d\n", score);
     return 0;
@@ -74,7 +74,7 @@ void game_loop(Board* board, Piece* piece, int* score) {
         }
 
         //check for clears
-        score = check_for_clears_and_score(board, gravity_tick_rates[gravity_index]);
+        *score = check_for_clears_and_score(board, gravity_tick_rates[gravity_index]);
 
         //take a copy of the board for printing
         copy_board(board, &copy);
@@ -83,9 +83,9 @@ void game_loop(Board* board, Piece* piece, int* score) {
 
         pthread_mutex_lock(&print_mutex);
         print_board(&copy);
-        printf("Score: %d\n", score);
+        printf("Score: %d\n", *score);
         pthread_mutex_unlock(&print_mutex);
-        gravity_index = update_fall_tick_rate(score);
+        gravity_index = update_fall_tick_rate(*score);
     }
 }
 

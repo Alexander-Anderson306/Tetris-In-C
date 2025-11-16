@@ -242,6 +242,7 @@ void rotate_piece(Piece* piece, char direction) {
  * @param direction The direction to move the piece, either 'a' for left or 'd' for right.
  */
 void move_piece(Piece* piece, Board* board, char direction) {
+    char stop_flag = 0;
     switch(direction) {
         case LEFT:
             piece->components[0].col--;
@@ -256,7 +257,6 @@ void move_piece(Piece* piece, Board* board, char direction) {
             piece->components[3].col++;
             break;
         case DROP:
-            char stop_flag = 0;
             while(!stop_flag) {
                 //check if there is something below each piece
                 for(int i = 0; i < 4; i++) {

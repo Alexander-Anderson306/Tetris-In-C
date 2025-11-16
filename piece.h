@@ -4,50 +4,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-
-#define PIECE_COMPONENT '#'
-//when a line gets filled in, the line will flash with DELETING_COMPONENT once then it gets deleted
-#define FLASHING_COMPONENT '@'
-
-#define START_ROW 1
-#define START_COL 5
-
-enum Piece_Type {
-    LINE,
-    SQUARE,
-    L,
-    REVERS_L,
-    Z,
-    REVERS_Z,
-    T
-};
-
-enum Button_Press {
-    DROP = 's',
-    LEFT = 'a',
-    RIGHT = 'd',
-    ROTATE_LEFT = 'q',
-    ROTATE_RIGHT = 'e',
-    //ESC = 27
-    QUIT = 27
-};
-
-typedef struct Piece_Component {
-    int row;
-    int col;
-    int x;
-    int y;
-} Piece_Component;
-
-typedef struct Piece {
-    Piece_Component components[4];
-    enum Piece_Type type;
-} Piece;
+#include "structs_enums_defines.h"
 
 void init_piece(Piece* piece);
 void copy_piece(Piece* source, Piece* destination);
 void rotate_piece(Piece* piece, char direction);
 void move_piece(Piece* piece, Board* board, char direction);
-char gravity_tick(Piece* piece);
+void gravity_tick(Piece* piece);
 
 #endif
