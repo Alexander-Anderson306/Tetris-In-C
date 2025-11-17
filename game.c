@@ -56,30 +56,39 @@ void game_loop(Board* board, Piece* piece, int* score) {
 
         pthread_mutex_lock(&board_mutex);
 
-        //save a copy of the last piece for proper update
-        Piece temp;
-        copy_piece(piece, &temp);
+        //save a copy of the last piece for proper update and board
+        Piece temp_piece;
+        copy_piece(piece, &temp_piece);
+        Board backup_board;
+        copy_board(board, &backup_board);
 
         //move the piece down
-        gravity_tick(&temp);
+        gravity_tick(&temp_piece);
 
         //update the board
-        result = update_board(board, &temp, piece);
+        result = update_board(board, &temp_piece, piece);
 
 
         if(result == 0) {
             //gravity move succeeded
-            copy_piece(&temp, piece);
+            copy_piece(&temp_piece, piece);
         } else if(result == 1) {
             //piece landed
             init_piece(piece);
+            result = update_board(board, piece, NULL);
         } else {
-            //game over
-            game_over = 1;
+            //invalid move load the old board
+            copy_board(&backup_board, board);
         }
 
         //check for clears
         *score = check_for_clears_and_score(board, gravity_tick_rates[gravity_index]);
+
+        //check for a game end
+        if(result == 2 && (piece->components[0].row == 1 || piece->components[1].row == 1 || 
+            piece->components[2].row == 1 || piece->components[3].row == 1)) {
+            game_over = 1;
+        }
 
         //take a copy of the board for printing
         copy_board(board, &copy);
