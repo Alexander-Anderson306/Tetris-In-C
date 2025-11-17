@@ -27,7 +27,7 @@ void init_piece(Piece* piece) {
             piece->components[0].col = START_COL - 1;
             piece->components[0].x = -1;
             piece->components[0].y = 0;
-            //second component rotate around this one
+            //second component pivot
             piece->components[1].row = START_ROW;
             piece->components[1].col = START_COL;
             piece->components[1].x = 0;
@@ -44,15 +44,15 @@ void init_piece(Piece* piece) {
             piece->components[3].y = 0;
             break;
         case SQUARE:
-            //first component rotate around this one
+            //first component
             piece->components[0].row = START_ROW;
-            piece->components[0].col = START_COL;
-            piece->components[0].x = 0;
+            piece->components[0].col = START_COL + 1;
+            piece->components[0].x = 1;
             piece->components[0].y = 0;
-            //second component
+            //second component pivot
             piece->components[1].row = START_ROW;
-            piece->components[1].col = START_COL + 1;
-            piece->components[1].x = 1;
+            piece->components[1].col = START_COL;
+            piece->components[1].x = 0;
             piece->components[1].y = 0;
             //third component
             piece->components[2].row = START_ROW + 1;
@@ -70,52 +70,52 @@ void init_piece(Piece* piece) {
             piece->components[0].row = START_ROW;
             piece->components[0].col = START_COL;
             piece->components[0].x = 0;
-            piece->components[0].y = 0;
-            //second component
+            piece->components[0].y = 1;
+            //second component pivot
             piece->components[1].row = START_ROW + 1;
             piece->components[1].col = START_COL;
             piece->components[1].x = 0;
-            piece->components[1].y = -1;
-            //third component rotate around this one
+            piece->components[1].y = 0;
+            //third component
             piece->components[2].row = START_ROW + 2;
             piece->components[2].col = START_COL;
             piece->components[2].x = 0;
-            piece->components[2].y = -2;
+            piece->components[2].y = -1;
             //fourth component
             piece->components[3].row = START_ROW + 2;
             piece->components[3].col = START_COL + 1;
             piece->components[3].x = 1;
-            piece->components[3].y = -2;
+            piece->components[3].y = -1;
             break;
         case REVERS_L:
             //first component
             piece->components[0].row = START_ROW;
             piece->components[0].col = START_COL;
             piece->components[0].x = 0;
-            piece->components[0].y = 0;
-            //second component
+            piece->components[0].y = 1;
+            //second component pivot
             piece->components[1].row = START_ROW + 1;
             piece->components[1].col = START_COL;
             piece->components[1].x = 0;
-            piece->components[1].y = -1;
-            //third component rotate around this one
+            piece->components[1].y = 0;
+            //third component
             piece->components[2].row = START_ROW + 2;
             piece->components[2].col = START_COL;
             piece->components[2].x = 0;
-            piece->components[2].y = -2;
+            piece->components[2].y = -1;
             //fourth component
             piece->components[3].row = START_ROW + 2;
             piece->components[3].col = START_COL - 1;
             piece->components[3].x = -1;
-            piece->components[3].y = -2;
+            piece->components[3].y = -1;
             break;
         case Z:
             //first component
             piece->components[0].row = START_ROW;
-            piece->components[0].col = START_COL-1;
+            piece->components[0].col = START_COL - 1;
             piece->components[0].x = -1;
             piece->components[0].y = 0;
-            //second component rotate around this one
+            //second component pivot
             piece->components[1].row = START_ROW;
             piece->components[1].col = START_COL;
             piece->components[1].x = 0;
@@ -133,25 +133,25 @@ void init_piece(Piece* piece) {
             break;
         case REVERS_Z:
             //first component
-            piece->components[0].row = START_ROW + 1;
-            piece->components[0].col = START_COL;
-            piece->components[0].x = 0;
-            piece->components[0].y = -1;
-            //second component rotate around this one
-            piece->components[1].row = START_ROW + 1;
-            piece->components[1].col = START_COL + 1;
-            piece->components[1].x = 1;
-            piece->components[1].y = -1;
+            piece->components[0].row = START_ROW;
+            piece->components[0].col = START_COL + 1;
+            piece->components[0].x = 1;
+            piece->components[0].y = 0;
+            //second component pivot
+            piece->components[1].row = START_ROW;
+            piece->components[1].col = START_COL;
+            piece->components[1].x = 0;
+            piece->components[1].y = 0;
             //third component
-            piece->components[2].row = START_ROW;
-            piece->components[2].col = START_COL + 1;
-            piece->components[2].x = 1;
-            piece->components[2].y = 0;
+            piece->components[2].row = START_ROW + 1;
+            piece->components[2].col = START_COL;
+            piece->components[2].x = 0;
+            piece->components[2].y = -1;
             //fourth component
-            piece->components[3].row = START_ROW;
-            piece->components[3].col = START_COL + 2;
-            piece->components[3].x = 2;
-            piece->components[3].y = 0;
+            piece->components[3].row = START_ROW + 1;
+            piece->components[3].col = START_COL - 1;
+            piece->components[3].x = -1;
+            piece->components[3].y = -1;
             break;
         case T:
             //first component
