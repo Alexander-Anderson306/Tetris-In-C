@@ -79,7 +79,14 @@ void game_loop(Board* board, Piece* piece, int* score) {
             //piece landed
             init_piece(piece);
             //check for clears
-            *score = check_for_clears_and_score(board, gravity_tick_rates[gravity_index]);
+            char score_updated = 1;
+            int old_score = *score;
+            //handle clears update the score (and handle when pieces fall in place and need to be cleared again)
+            while(score_updated) {
+                *score += check_for_clears_and_score(board, gravity_tick_rates[gravity_index]);
+                score_updated = *score != old_score;
+                old_score = *score;
+            }
             result = update_board(board, piece, NULL);
         } else {
             //invalid move load the old board
@@ -268,13 +275,13 @@ int check_for_clears_and_score(Board* board, int tick_rate) {
 
     //print the cleared board to show the deletion
     print_board(board);
-    usleep(tick_rate/4);
+    usleep(tick_rate/2);
 
     pthread_mutex_unlock(&print_mutex);
 
     //something here is causing a segfault
     //update the board (move all the components that can move down down)
-    for(int i = ROWS - 2; i > 1; i++) {
+    for(int i = ROWS - 2; i > 1; i--) {
         for(int j = 1; j < COLS-1; j++) {
             //skip unmarked spaces
             if(board->character_board[i][j] == EMPTY_SPACE) {
