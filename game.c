@@ -28,6 +28,7 @@ int main() {
     //initial frame
     print_board(&board);
     printf("Score: %d\n", 0);
+    printf("\033[%dA", ROWS + 1);
 
     //user input thread
     pthread_t input_tid;
@@ -107,6 +108,7 @@ void game_loop(Board* board, Piece* piece, int* score) {
         pthread_mutex_lock(&print_mutex);
         print_board(&copy);
         printf("Score: %d\n", *score);
+        printf("\033[%dA", ROWS + 1);
         pthread_mutex_unlock(&print_mutex);
         gravity_index = update_fall_tick_rate(*score);
     }
@@ -175,6 +177,7 @@ void* input_thread(void* args) {
             pthread_mutex_lock(&print_mutex);
             print_board(&copy);
             printf("Score: %d\n", *score);
+            printf("\033[%dA", ROWS + 1);
             pthread_mutex_unlock(&print_mutex);
         }
     }
@@ -255,8 +258,13 @@ int check_for_clears_and_score(Board* board, int tick_rate) {
     while(num_flashes < 3){
         //flash the pieces that are getting deleted
         print_board(board);
+        printf("Score: %d\n", score);
+        printf("\033[%dA", ROWS + 1);
         usleep(tick_rate/4);
         print_board(&flashed_board);
+        printf("Score: %d\n", score);
+        printf("\033[%dA", ROWS + 1);
+
         ++num_flashes;
         usleep(tick_rate/4);
     }
@@ -275,6 +283,9 @@ int check_for_clears_and_score(Board* board, int tick_rate) {
 
     //print the cleared board to show the deletion
     print_board(board);
+    printf("Score: %d\n", score);
+    printf("\033[%dA", ROWS + 1);
+
     usleep(tick_rate/2);
 
     pthread_mutex_unlock(&print_mutex);
@@ -306,6 +317,8 @@ int check_for_clears_and_score(Board* board, int tick_rate) {
     //print the new board
     pthread_mutex_lock(&print_mutex);
     print_board(board);
+    printf("Score: %d\n", score);
+    printf("\033[%dA", ROWS + 1);
     pthread_mutex_unlock(&print_mutex);
     //all done return the score
     return score;
