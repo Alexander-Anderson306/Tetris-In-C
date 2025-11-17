@@ -48,8 +48,6 @@ enum Button_Press {
 typedef struct Piece_Component {
     int row;
     int col;
-    int x;
-    int y;
 } Piece_Component;
 
 typedef struct Piece {

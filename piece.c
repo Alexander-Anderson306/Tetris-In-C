@@ -1,10 +1,8 @@
 #include "piece.h"
 #include "board.h"
 
-//keep left rotation and right rotation constantly loaded in memory and just use references to them
-//Flatened 2X2 matrix: 0 = 00, 1 = 01, 2 = 10, 3 = 11
-int left_rotation[] = {0, -1, 1, 0};
-int right_rotation[] = {0, 1, -1, 0};
+int left_rotation[]  = { 0, -1,  1,  0 };
+int right_rotation[] = { 0,  1, -1,  0 };
 
 /**
  * Initializes a given piece with a random piece type and corresponding components.
@@ -25,155 +23,99 @@ void init_piece(Piece* piece) {
             //first component
             piece->components[0].row = START_ROW;
             piece->components[0].col = START_COL - 1;
-            piece->components[0].x = -1;
-            piece->components[0].y = 0;
             //second component pivot
             piece->components[1].row = START_ROW;
             piece->components[1].col = START_COL;
-            piece->components[1].x = 0;
-            piece->components[1].y = 0;
             //third component
             piece->components[2].row = START_ROW;
             piece->components[2].col = START_COL + 1;
-            piece->components[2].x = 1;
-            piece->components[2].y = 0;
             //fourth component
             piece->components[3].row = START_ROW;
             piece->components[3].col = START_COL + 2;
-            piece->components[3].x = 2;
-            piece->components[3].y = 0;
             break;
         case SQUARE:
             //first component
             piece->components[0].row = START_ROW;
             piece->components[0].col = START_COL + 1;
-            piece->components[0].x = 1;
-            piece->components[0].y = 0;
             //second component pivot
             piece->components[1].row = START_ROW;
             piece->components[1].col = START_COL;
-            piece->components[1].x = 0;
-            piece->components[1].y = 0;
             //third component
             piece->components[2].row = START_ROW + 1;
             piece->components[2].col = START_COL;
-            piece->components[2].x = 0;
-            piece->components[2].y = -1;
             //fourth component
             piece->components[3].row = START_ROW + 1;
             piece->components[3].col = START_COL + 1;
-            piece->components[3].x = 1;
-            piece->components[3].y = -1;
             break;
         case L:
             //first component
             piece->components[0].row = START_ROW;
             piece->components[0].col = START_COL;
-            piece->components[0].x = 0;
-            piece->components[0].y = 1;
             //second component pivot
             piece->components[1].row = START_ROW + 1;
             piece->components[1].col = START_COL;
-            piece->components[1].x = 0;
-            piece->components[1].y = 0;
             //third component
             piece->components[2].row = START_ROW + 2;
             piece->components[2].col = START_COL;
-            piece->components[2].x = 0;
-            piece->components[2].y = -1;
             //fourth component
             piece->components[3].row = START_ROW + 2;
             piece->components[3].col = START_COL + 1;
-            piece->components[3].x = 1;
-            piece->components[3].y = -1;
             break;
         case REVERS_L:
             //first component
             piece->components[0].row = START_ROW;
             piece->components[0].col = START_COL;
-            piece->components[0].x = 0;
-            piece->components[0].y = 1;
             //second component pivot
             piece->components[1].row = START_ROW + 1;
             piece->components[1].col = START_COL;
-            piece->components[1].x = 0;
-            piece->components[1].y = 0;
             //third component
             piece->components[2].row = START_ROW + 2;
             piece->components[2].col = START_COL;
-            piece->components[2].x = 0;
-            piece->components[2].y = -1;
             //fourth component
             piece->components[3].row = START_ROW + 2;
             piece->components[3].col = START_COL - 1;
-            piece->components[3].x = -1;
-            piece->components[3].y = -1;
             break;
         case Z:
             //first component
             piece->components[0].row = START_ROW;
             piece->components[0].col = START_COL - 1;
-            piece->components[0].x = -1;
-            piece->components[0].y = 0;
             //second component pivot
             piece->components[1].row = START_ROW;
             piece->components[1].col = START_COL;
-            piece->components[1].x = 0;
-            piece->components[1].y = 0;
             //third component
             piece->components[2].row = START_ROW + 1;
             piece->components[2].col = START_COL;
-            piece->components[2].x = 0;
-            piece->components[2].y = -1;
             //fourth component
             piece->components[3].row = START_ROW + 1;
             piece->components[3].col = START_COL + 1;
-            piece->components[3].x = 1;
-            piece->components[3].y = -1;
             break;
         case REVERS_Z:
             //first component
             piece->components[0].row = START_ROW;
             piece->components[0].col = START_COL + 1;
-            piece->components[0].x = 1;
-            piece->components[0].y = 0;
             //second component pivot
             piece->components[1].row = START_ROW;
             piece->components[1].col = START_COL;
-            piece->components[1].x = 0;
-            piece->components[1].y = 0;
             //third component
             piece->components[2].row = START_ROW + 1;
             piece->components[2].col = START_COL;
-            piece->components[2].x = 0;
-            piece->components[2].y = -1;
             //fourth component
             piece->components[3].row = START_ROW + 1;
             piece->components[3].col = START_COL - 1;
-            piece->components[3].x = -1;
-            piece->components[3].y = -1;
             break;
         case T:
             //first component
             piece->components[0].row = START_ROW;
             piece->components[0].col = START_COL - 1;
-            piece->components[0].x = -1;
-            piece->components[0].y = 0;
             //second component rotate around this one
             piece->components[1].row = START_ROW;
             piece->components[1].col = START_COL;
-            piece->components[1].x = 0;
-            piece->components[1].y = 0;
             //third component
             piece->components[2].row = START_ROW + 1;
             piece->components[2].col = START_COL;
-            piece->components[2].x = 0;
-            piece->components[2].y = -1;
             //fourth component
             piece->components[3].row = START_ROW;
             piece->components[3].col = START_COL + 1;
-            piece->components[3].x = 1;
-            piece->components[3].y = 0;
             break;
         default:
             fprintf(stderr, "Invalid piece type generated\n");
@@ -192,8 +134,6 @@ void copy_piece(Piece* source, Piece* destination) {
     for (int i = 0; i < 4; i++) {
         destination->components[i].row = source->components[i].row;
         destination->components[i].col = source->components[i].col;
-        destination->components[i].x = source->components[i].x;
-        destination->components[i].y = source->components[i].y;
     }
     destination->type = source->type;
 }
@@ -206,32 +146,36 @@ void copy_piece(Piece* source, Piece* destination) {
  * @param direction The direction to rotate the piece, either 'a' or 'd'.
  */
 void rotate_piece(Piece* piece, char direction) {
-    //we multiply by the left rotation matrix
-    //RotMat 2X2 times 2X1 = 2X1
+    // we use the second component as the pivot component
+    int pivot_row = piece->components[1].row;
+    int pivot_col = piece->components[1].col;
+
+    //select the rotation matrix
+    int *R = NULL;
     if (direction == ROTATE_LEFT) {
-        for (int i = 0; i < 4; i++) {
-            int old_x = piece->components[i].x;
-            int old_y = piece->components[i].y;
-
-            piece->components[i].x = old_x * left_rotation[0] + old_y * left_rotation[1];
-            piece->components[i].y = old_x * left_rotation[2] + old_y * left_rotation[3];
-
-            //apply the rotation to the board coordinates
-            piece->components[i].row += piece->components[i].y;
-            piece->components[i].col += piece->components[i].x;
-        }
+        R = left_rotation;
     } else if (direction == ROTATE_RIGHT) {
-        for (int i = 0; i < 4; i++) {
-            int old_x = piece->components[i].x;
-            int old_y = piece->components[i].y;
+        R = right_rotation;
+    } else {
+        return;
+    }
 
-            piece->components[i].x = old_x * right_rotation[0] + old_y * right_rotation[1];
-            piece->components[i].y = old_x * right_rotation[2] + old_y * right_rotation[3];
+    //ai helped me figure this out ngl
+    for (int i = 0; i < 4; i++) {
+        int row = piece->components[i].row;
+        int col = piece->components[i].col;
 
-            //apply the rotation to the board coordinates
-            piece->components[i].row += piece->components[i].y;
-            piece->components[i].col += piece->components[i].x;
-        }
+        //local coords relative to pivot
+        int dx = col - pivot_col;
+        int dy = row - pivot_row;
+
+        //rotate (dx, dy) using matrix R
+        int new_dx = dx * R[0] + dy * R[1];
+        int new_dy = dx * R[2] + dy * R[3];
+
+        //convert back to board coords
+        piece->components[i].col = pivot_col + new_dx;
+        piece->components[i].row = pivot_row + new_dy;
     }
 }
 
