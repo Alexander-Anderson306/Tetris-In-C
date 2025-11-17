@@ -8,6 +8,7 @@ static pthread_mutex_t print_mutex = PTHREAD_MUTEX_INITIALIZER;
 
 int main() {
     //seed random
+    usleep(1000);
     srand(time(NULL));
     //set raw mode
     set_raw_mode();
@@ -15,7 +16,10 @@ int main() {
     Board board;
     init_board(&board);
     Piece piece;
-    init_piece(&piece);
+    //starting with a z or reverse z sucks
+    do {
+        init_piece(&piece);   
+    } while(piece.type == Z || piece.type == REVERS_Z);
 
     int score = 0;
     //put the piece on the board and start the game loop
@@ -68,21 +72,19 @@ void game_loop(Board* board, Piece* piece, int* score) {
         //update the board
         result = update_board(board, &temp_piece, piece);
 
-
         if(result == 0) {
             //gravity move succeeded
             copy_piece(&temp_piece, piece);
         } else if(result == 1) {
             //piece landed
             init_piece(piece);
+            //check for clears
+            *score = check_for_clears_and_score(board, gravity_tick_rates[gravity_index]);
             result = update_board(board, piece, NULL);
         } else {
             //invalid move load the old board
             copy_board(&backup_board, board);
         }
-
-        //check for clears
-        *score = check_for_clears_and_score(board, gravity_tick_rates[gravity_index]);
 
         //check for a game end
         if(result == 2 && (piece->components[0].row == 1 || piece->components[1].row == 1 || 
@@ -242,6 +244,7 @@ int check_for_clears_and_score(Board* board, int tick_rate) {
 
     //now clear the rows (flash them 3 times then remove them)
     int num_flashes = 0;
+    pthread_mutex_lock(&print_mutex);
     while(num_flashes < 3){
         //flash the pieces that are getting deleted
         print_board(board);
@@ -267,30 +270,36 @@ int check_for_clears_and_score(Board* board, int tick_rate) {
     print_board(board);
     usleep(tick_rate/4);
 
-    //update the board (move all the pieces that can move down down)
-    for(int i = ROWS-1; i > 1; i--) {
+    pthread_mutex_unlock(&print_mutex);
+
+    //something here is causing a segfault
+    //update the board (move all the components that can move down down)
+    for(int i = ROWS - 2; i > 1; i++) {
         for(int j = 1; j < COLS-1; j++) {
+            //skip unmarked spaces
+            if(board->character_board[i][j] == EMPTY_SPACE) {
+                continue;
+            }
+
             //move the piece down until it hits something
             int new_row = i;
-            while(new_row > 1 && board->character_board[new_row-1][j] == EMPTY_SPACE) --new_row;
+            while(new_row + 1 < ROWS - 1 && board->character_board[new_row+1][j] == EMPTY_SPACE) ++new_row;
             //move the piece if we have to
             if(new_row != i) {
                 RGB color;
                 copy_rgb(&board->color_board[i][j], &color);
                 board->character_board[new_row][j] = PIECE_COMPONENT;
-                board->color_board[new_row][j].r = color.r;
-                board->color_board[new_row][j].g = color.g;
-                board->color_board[new_row][j].b = color.b;
+                board->color_board[new_row][j] = color;
                 board->character_board[i][j] = EMPTY_SPACE;
-                board->color_board[i][j].r = grey.r;
-                board->color_board[i][j].g = grey.g;
-                board->color_board[i][j].b = grey.b;
+                board->color_board[i][j] = grey;
             }
         }
     }
 
     //print the new board
+    pthread_mutex_lock(&print_mutex);
     print_board(board);
+    pthread_mutex_unlock(&print_mutex);
     //all done return the score
     return score;
 }
