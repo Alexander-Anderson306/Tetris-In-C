@@ -47,6 +47,7 @@ int main() {
     return 0;
 }
 
+//TODO : Fix this
 void game_loop(Board* board, Piece* piece, int* score) {
     int gravity_index = 0;
     char result = 0;
@@ -61,15 +62,20 @@ void game_loop(Board* board, Piece* piece, int* score) {
         copy_piece(piece, &temp);
 
         //move the piece down
-        gravity_tick(piece);
+        gravity_tick(&temp);
 
         //update the board
-        result = update_board(board, piece, &temp);
+        result = update_board(board, &temp, piece);
 
-        //if the result is one we need a new piece
-        if(result == 1) {
+
+        if(result == 0) {
+            //gravity move succeeded
+            copy_piece(&temp, piece);
+        } else if(result == 1) {
+            //piece landed
             init_piece(piece);
-        } else if(result == 2) {
+        } else {
+            //game over
             game_over = 1;
         }
 

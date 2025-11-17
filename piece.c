@@ -243,6 +243,7 @@ void rotate_piece(Piece* piece, char direction) {
  */
 void move_piece(Piece* piece, Board* board, char direction) {
     char stop_flag = 0;
+    char cant_fall = 1;
     switch(direction) {
         case LEFT:
             piece->components[0].col--;
@@ -256,13 +257,24 @@ void move_piece(Piece* piece, Board* board, char direction) {
             piece->components[2].col++;
             piece->components[3].col++;
             break;
+        //TODO : Fix this
         case DROP:
             while(!stop_flag) {
-                //check if there is something below each piece
+                //check if there is something below each piece that isn't empty or part of the piece itself
                 for(int i = 0; i < 4; i++) {
-                    if(board->character_board[piece->components[i].row+1][piece->components[i].col] != EMPTY_SPACE) {
-                        stop_flag = 1;
-                        break;
+                    if(board->character_board[piece->components[i].row + 1][piece->components[i].col] != EMPTY_SPACE) {
+                        //check if this piece component is part of the current piece
+                        cant_fall = 1;
+                        for(int j = 0; j < 4; j++) {
+                            if(piece->components[i].col == piece->components[j].col && piece->components[i].row == piece->components[j].row) {
+                                //the piece component is just part of the current piece (no problem keep falling)
+                                cant_fall = 0;
+                            }
+                        }
+
+                        if(cant_fall) {
+                            stop_flag = 1;
+                        }
                     }
                 }
 
@@ -274,8 +286,9 @@ void move_piece(Piece* piece, Board* board, char direction) {
                     piece->components[3].row++;
                 }
             }
+            break;
         default:
-            fprintf(stderr, "Invalid direction generated\n");
+            fprintf(stderr, "Invalid direction generated\nDirection: %c\n", direction);
             exit(1);
             break;
     }

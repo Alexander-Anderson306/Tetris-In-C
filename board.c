@@ -155,19 +155,31 @@ char update_board(Board* board, Piece* new_piece, Piece* old_piece) {
         }
     }
 
-    //now check if the piece can move down again
-    for(int i = 0; i < 4; i++) {
-        if(board->character_board[new_piece->components[i].row + 1][new_piece->components[i].col] != EMPTY_SPACE) {
-            //check if this piece component is part of the current piece
-            char cant_fall = 1;
-            for(int j = 0; j < 4; j++) {
-                if(new_piece->components[i].col == new_piece->components[j].col && new_piece->components[i].row == new_piece->components[j].row) {
-                    //the piece component is just part of the current piece (no problem keep falling)
-                    cant_fall = 0;
+    //check if the piece can move down again
+    for (int i = 0; i < 4; i++) {
+
+        int row = new_piece->components[i].row;
+        int col = new_piece->components[i].col;
+
+        //look at the cell below
+        int below_row = row + 1;
+        int below_col = col;
+
+        char below = board->character_board[below_row][below_col];
+
+        //if the cell below is not empty make sure its not part of the same piece
+        if (below != EMPTY_SPACE) {
+            char same_piece = 0;
+
+            for (int j = 0; j < 4; j++) {
+                if (new_piece->components[j].row == below_row &&
+                    new_piece->components[j].col == below_col) {
+                    same_piece = 1;
+                    break;
                 }
             }
 
-            if(cant_fall) {
+            if (!same_piece) {
                 return 1;
             }
         }
