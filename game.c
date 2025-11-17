@@ -47,7 +47,6 @@ int main() {
     return 0;
 }
 
-//TODO : Fix this
 void game_loop(Board* board, Piece* piece, int* score) {
     int gravity_index = 0;
     char result = 0;

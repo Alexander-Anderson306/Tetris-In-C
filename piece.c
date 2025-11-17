@@ -243,7 +243,6 @@ void rotate_piece(Piece* piece, char direction) {
  */
 void move_piece(Piece* piece, Board* board, char direction) {
     char stop_flag = 0;
-    char cant_fall = 1;
     switch(direction) {
         case LEFT:
             piece->components[0].col--;
@@ -257,22 +256,33 @@ void move_piece(Piece* piece, Board* board, char direction) {
             piece->components[2].col++;
             piece->components[3].col++;
             break;
-        //TODO : Fix this
         case DROP:
             while(!stop_flag) {
-                //check if there is something below each piece that isn't empty or part of the piece itself
-                for(int i = 0; i < 4; i++) {
-                    if(board->character_board[piece->components[i].row + 1][piece->components[i].col] != EMPTY_SPACE) {
-                        //check if this piece component is part of the current piece
-                        cant_fall = 1;
-                        for(int j = 0; j < 4; j++) {
-                            if(piece->components[i].col == piece->components[j].col && piece->components[i].row == piece->components[j].row) {
-                                //the piece component is just part of the current piece (no problem keep falling)
-                                cant_fall = 0;
+                //check if the piece can move down again
+                for (int i = 0; i < 4; i++) {
+
+                    int row = piece->components[i].row;
+                    int col = piece->components[i].col;
+
+                    //look at the cell below
+                    int below_row = row + 1;
+                    int below_col = col;
+
+                    char below = board->character_board[below_row][below_col];
+
+                    //if the cell below is not empty make sure its not part of the same piece
+                    if (below != EMPTY_SPACE) {
+                        char same_piece = 0;
+
+                        for (int j = 0; j < 4; j++) {
+                            if (piece->components[j].row == below_row &&
+                                piece->components[j].col == below_col) {
+                                same_piece = 1;
+                                break;
                             }
                         }
 
-                        if(cant_fall) {
+                        if (!same_piece) {
                             stop_flag = 1;
                         }
                     }
@@ -286,6 +296,12 @@ void move_piece(Piece* piece, Board* board, char direction) {
                     piece->components[3].row++;
                 }
             }
+
+            //push the piece back up one sloppy fix for bug
+            piece->components[0].row--;
+            piece->components[1].row--;
+            piece->components[2].row--;
+            piece->components[3].row--;
             break;
         default:
             fprintf(stderr, "Invalid direction generated\nDirection: %c\n", direction);
