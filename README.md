@@ -11,8 +11,8 @@ Tetris written entirly in C for the terminal.
 ---
 
 ## How to play:
-Clone the repository
-Compile with: gcc *.c -o game -pthread
+Clone the repository  
+Compile with: gcc *.c -o game -pthread or gcc -DEASY_MODE *.c -o game -pthread for easy mode.  
 Then run the program!
 
 ---
