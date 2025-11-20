@@ -290,7 +290,8 @@ int check_for_clears_and_score(Board* board, int tick_rate) {
 
     pthread_mutex_unlock(&print_mutex);
 
-    //something here is causing a segfault
+    //if we are in easy mode update the board such that pieces fall as far as they can
+    #ifdef EASY_MODE
     //update the board (move all the components that can move down down)
     for(int i = ROWS - 2; i > 1; i--) {
         for(int j = 1; j < COLS-1; j++) {
@@ -313,6 +314,51 @@ int check_for_clears_and_score(Board* board, int tick_rate) {
             }
         }
     }
+
+    //if we are not in easy mode update the board such that rows fill in and pieces dont fall
+    #else
+    int write_row = ROWS - 2;
+
+    for (int i = ROWS - 2; i > 0; i--) {
+
+        //check if the current row is empty
+        int empty = 1;
+        for (int j = 1; j < COLS - 1; j++) {
+            if (board->character_board[i][j] != EMPTY_SPACE) {
+                empty = 0;
+                break;
+            }
+        }
+
+        //if the current row is not empty, write it to the write row
+        if (!empty) {
+            if (write_row != i) {
+                for(int j = 1; j < COLS-1; j++) {
+                    //swap rows
+                    char tmp = board->character_board[i][j];
+                    board->character_board[i][j] = board->character_board[write_row][j];
+                    board->character_board[write_row][j] = tmp;
+
+                    RGB tmp2 = board->color_board[i][j];
+                    board->color_board[i][j] = board->color_board[write_row][j];
+                    board->color_board[write_row][j] = tmp2;
+                }
+            }
+
+            write_row--;
+        }
+    }
+
+
+    //fill in the empty rows
+    for (int i = write_row; i > 0; i--) {
+        for (int j = 1; j < COLS - 1; j++) {
+            board->character_board[i][j] = EMPTY_SPACE;
+            board->color_board[i][j] = grey;
+        }
+    }
+
+    #endif
 
     //print the new board
     pthread_mutex_lock(&print_mutex);
