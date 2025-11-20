@@ -48,6 +48,7 @@ int main() {
     reset_terminal();
 
     //print the final score
+    printf("\033[%dB", ROWS);
     printf("Final Score: %d\n", score);
     return 0;
 }
@@ -318,9 +319,7 @@ int check_for_clears_and_score(Board* board, int tick_rate) {
     //if we are not in easy mode update the board such that rows fill in and pieces dont fall
     #else
     int write_row = ROWS - 2;
-
     for (int i = ROWS - 2; i > 0; i--) {
-
         //check if the current row is empty
         int empty = 1;
         for (int j = 1; j < COLS - 1; j++) {
