@@ -134,11 +134,23 @@ void* input_thread(void* args) {
     int* score = thread_args->score;
     char input;
 
+    char garbage1 = 0;
+    char garbage2 = 0;
+
     while(!game_over) {
         usleep(USER_TICK_RATE);
 
         if (read(STDIN_FILENO, &input, 1) > 0) {
+            //TO LOWER CASE
+            if (input >= 'A' && input <= 'Z') {
+                input += 'a' - 'A';
+            //could be a quit or could be an arrow key (if its an arrow key we gotta clear the buffer)
+            } else if (input == 27) {
+                read(STDIN_FILENO, &garbage1, 1);
+                read(STDIN_FILENO, &garbage2, 1);
+            }
 
+            //
             pthread_mutex_lock(&board_mutex);
 
             //save temp copies to validate input before committing
